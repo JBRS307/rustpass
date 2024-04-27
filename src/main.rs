@@ -1,3 +1,8 @@
+use jbrspass::console_parser::{set_actions, ParamAction};
 fn main() {
-    println!("Hello, world!");
+    let actions = set_actions();
+
+    for action in &actions {
+        println!("{:?}", action);
+    }
 }
