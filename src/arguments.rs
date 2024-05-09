@@ -16,7 +16,7 @@ pub struct AddArgs {
 
     /// Copies password to clipboard
     #[arg(short, long)]
-    copy: bool,
+    pub copy: bool,
 }
 
 #[derive(Args)]
@@ -35,11 +35,11 @@ pub struct UpdateArgs {
 
     /// Copies old password to clipboard
     #[arg(long)]
-    copy_old: bool,
+    pub copy_old: bool,
 
     /// Copies new password to clipboard
     #[arg(short, long)]
-    copy_new: bool,
+    pub copy_new: bool,
 }
 
 #[derive(Args)]
@@ -52,7 +52,7 @@ pub struct RemoveArgs {
 
     /// Copies removed password to clipboard
     #[arg(short, long)]
-    copy: bool,
+    pub copy: bool,
 }
 
 #[derive(Args)]

@@ -28,6 +28,14 @@ pub fn update(
     Ok(())
 }
 
+pub fn remove(
+    page: &String,
+    username: &String,
+    copy: bool,
+) -> Result<()> {
+    Ok(())
+}
+
 pub fn generate(
     no_symbols: bool,
     copy: bool,
@@ -35,15 +43,15 @@ pub fn generate(
     save: bool,
     new_save: bool,
     length: u32,
-    page: Option<String>,
-    username: Option<String>,
+    page: &Option<String>,
+    username: &Option<String>,
 ) -> Result<()> {
     Ok(())
 }
 
 pub fn get(
-    page: String,
-    username: String,
+    page: &String,
+    username: &String,
     no_print: bool,
     copy: bool,
 ) -> Result<()> {
