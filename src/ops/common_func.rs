@@ -1,4 +1,4 @@
-use cli_clipboard::{linux_clipboard::LinuxClipboardContext, ClipboardContext, ClipboardProvider};
+use cli_clipboard::{ClipboardContext, ClipboardProvider};
 
 pub fn copy_to_clipboard(text: &str) {
     let ctx: Result<ClipboardContext, Box<dyn std::error::Error>> = ClipboardProvider::new();

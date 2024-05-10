@@ -1,7 +1,9 @@
-use anyhow::Result;
+use anyhow::{Result, Error};
 use self::common_func::*;
+use self::generate_func::*;
 
 mod common_func;
+mod generate_func;
 
 pub fn add(
     page: &String,
@@ -10,6 +12,10 @@ pub fn add(
     repeat_password: &String,
     copy: bool,
 ) -> Result<()> {
+    if password.ne(repeat_password) {
+        return Err(Error::msg("Passwords differ!"));
+    }
+
     if copy {
         copy_to_clipboard(password);
     }
@@ -25,6 +31,9 @@ pub fn update(
     copy_old: bool,
     copy_new: bool,
 ) -> Result<()> {
+    if password.ne(repeat_password) {
+        return Err(Error::msg("Passwords differ!"));
+    }
     Ok(())
 }
 
@@ -46,6 +55,20 @@ pub fn generate(
     page: &Option<String>,
     username: &Option<String>,
 ) -> Result<()> {
+    let password: String = if no_symbols {
+        generate_alphanum(length)
+    } else {
+        generate_full(length)
+    };
+
+    if !no_print {
+        println!("{}", password);
+    }
+
+    if copy {
+        copy_to_clipboard(&password);
+    }
+
     Ok(())
 }
 
