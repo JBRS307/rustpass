@@ -1,3 +1,7 @@
+use anyhow::{Result, Error};
+use std::path::PathBuf;
+use dirs;
+
 use cli_clipboard::{ClipboardContext, ClipboardProvider};
 
 pub fn copy_to_clipboard(text: &str) {
@@ -16,4 +20,13 @@ pub fn copy_to_clipboard(text: &str) {
         },
         Err(err) => eprintln!("A clipboard error has occured: {}", err),
     }
+}
+
+pub fn get_home_dir() -> PathBuf {
+    dirs::home_dir().expect("Unable to get the home directory!")
+}
+
+pub fn get_key() -> Vec<u8> {
+    // TODO
+    Vec::new()
 }

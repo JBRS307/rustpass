@@ -1,6 +1,16 @@
 use clap::Args;
 
 #[derive(Args)]
+pub struct InitArgs {
+    /// Subfolder to be initialized
+    #[arg(short, long)]
+    pub path: Option<String>,
+
+    /// Your PGP encryption key
+    pub key: String,
+}
+
+#[derive(Args)]
 pub struct AddArgs {
     /// Page for which the password is stored, it doesn't have to be a URL
     pub page: String,
@@ -111,4 +121,15 @@ pub struct GetArgs {
     /// Copies password to clipboard
     #[arg(short, long)]
     pub copy: bool
+}
+
+#[derive(Args)]
+pub struct ListArgs {
+    /// Subfolder which you want to be listed, if not specified, main folder is listed
+    pub path: Option<String>,
+
+    /// List recursively every subfolder from given subfolder
+    #[arg(short)]
+    pub recursive: bool
+
 }

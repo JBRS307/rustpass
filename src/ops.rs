@@ -1,9 +1,15 @@
 use anyhow::{Result, Error};
 use self::common_func::*;
 use self::generate_func::*;
+use crate::encryption::*;
 
 mod common_func;
 mod generate_func;
+
+pub fn init(path: &Option<String>, key_id: &String) -> Result<()> {
+    let key = generate_key();
+    Ok(())
+}
 
 pub fn add(
     page: &String,
@@ -78,6 +84,10 @@ pub fn get(
     no_print: bool,
     copy: bool,
 ) -> Result<()> {
+    Ok(())
+}
+
+pub fn list(path: &Option<String>, recursive: bool) -> Result<()> {
     Ok(())
 }
 
