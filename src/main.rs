@@ -33,7 +33,7 @@ enum Commands {
     List(ListArgs),
 }
 
-fn main() -> Result<()> {
+fn main() {
     let cli = Cli::parse();
 
     match cli.command {
@@ -46,8 +46,6 @@ fn main() -> Result<()> {
         Commands::Generate(args) => generate(args.no_symbols, args.copy, args.no_print, args.saving.save, args.saving.new_save,
                                                            args.length, &args.page, &args.username),
         Commands::Get(args) => get(&args.page, &args.username, args.no_print, args.copy),
-        Commands::List(args) => list(&args.path, args.recursive),
+        Commands::List(args) => list(&args.path),
     };
-
-    Ok(())
 }

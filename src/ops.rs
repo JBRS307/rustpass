@@ -90,7 +90,7 @@ pub fn get(
 
 }
 
-pub fn list(path: &Option<String>, recursive: bool) {
+pub fn list(path: &Option<String>) {
 
 }
 

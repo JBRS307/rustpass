@@ -127,9 +127,4 @@ pub struct GetArgs {
 pub struct ListArgs {
     /// Subfolder which you want to be listed, if not specified, main folder is listed
     pub path: Option<String>,
-
-    /// List recursively every subfolder from given subfolder
-    #[arg(short)]
-    pub recursive: bool
-
 }
