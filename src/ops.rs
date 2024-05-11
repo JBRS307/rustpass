@@ -1,18 +1,21 @@
+use std::path::PathBuf;
+
 use anyhow::{Result, Error};
 use self::common_func::*;
 use self::generate_func::*;
 use crate::encryption::*;
+use crate::files::*;
 
 mod common_func;
 mod generate_func;
 
-pub fn init(path: &Option<String>, key_id: &String) {
+pub fn init(path: &Option<PathBuf>, key_id: &String) {
     let key = generate_key();
+    create_dir_tree(path, key_id);
 }
 
 pub fn add(
-    page: &String,
-    username: &String,
+    path: &PathBuf,
     password: &String,
     repeat_password: &String,
     copy: bool,
@@ -32,8 +35,7 @@ pub fn add(
 }
 
 pub fn update(
-    page: &String,
-    username: &String,
+    path: &PathBuf,
     password: &String,
     repeat_password: &String,
     copy_old: bool,
@@ -46,8 +48,7 @@ pub fn update(
 }
 
 pub fn remove(
-    page: &String,
-    username: &String,
+    path: &PathBuf,
     copy: bool,
 )
 {
@@ -61,8 +62,7 @@ pub fn generate(
     save: bool,
     new_save: bool,
     length: u32,
-    page: &Option<String>,
-    username: &Option<String>,
+    path: &Option<PathBuf>
 )
 {
     let password: String = if no_symbols {
@@ -81,8 +81,7 @@ pub fn generate(
 }
 
 pub fn get(
-    page: &String,
-    username: &String,
+    path: &PathBuf,
     no_print: bool,
     copy: bool,
 )
@@ -90,8 +89,12 @@ pub fn get(
 
 }
 
-pub fn list(path: &Option<String>) {
+pub fn list(path: &Option<PathBuf>) {
 
+}
+
+pub fn clear(path: &Option<PathBuf>) {
+    clear_dir(path);
 }
 
 

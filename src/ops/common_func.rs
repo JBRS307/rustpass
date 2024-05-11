@@ -22,10 +22,6 @@ pub fn copy_to_clipboard(text: &str) {
     }
 }
 
-pub fn get_home_dir() -> PathBuf {
-    dirs::home_dir().expect("Unable to get the home directory!")
-}
-
 pub fn get_key() -> Vec<u8> {
     // TODO
     Vec::new()
