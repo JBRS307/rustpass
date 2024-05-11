@@ -6,9 +6,8 @@ use crate::encryption::*;
 mod common_func;
 mod generate_func;
 
-pub fn init(path: &Option<String>, key_id: &String) -> Result<()> {
+pub fn init(path: &Option<String>, key_id: &String) {
     let key = generate_key();
-    Ok(())
 }
 
 pub fn add(
@@ -17,16 +16,19 @@ pub fn add(
     password: &String,
     repeat_password: &String,
     copy: bool,
-) -> Result<()> {
+)
+{
     if password.ne(repeat_password) {
-        return Err(Error::msg("Passwords differ!"));
+        panic!("Passwords differ!");
     }
+
+    let key = get_key();
+
+    let encrypted = encrypt(&key, password);
 
     if copy {
         copy_to_clipboard(password);
     }
-
-    Ok(())
 }
 
 pub fn update(
@@ -36,19 +38,20 @@ pub fn update(
     repeat_password: &String,
     copy_old: bool,
     copy_new: bool,
-) -> Result<()> {
+)
+{
     if password.ne(repeat_password) {
-        return Err(Error::msg("Passwords differ!"));
+        panic!("Password differ!");
     }
-    Ok(())
 }
 
 pub fn remove(
     page: &String,
     username: &String,
     copy: bool,
-) -> Result<()> {
-    Ok(())
+)
+{
+
 }
 
 pub fn generate(
@@ -60,7 +63,8 @@ pub fn generate(
     length: u32,
     page: &Option<String>,
     username: &Option<String>,
-) -> Result<()> {
+)
+{
     let password: String = if no_symbols {
         generate_alphanum(length)
     } else {
@@ -74,8 +78,6 @@ pub fn generate(
     if copy {
         copy_to_clipboard(&password);
     }
-
-    Ok(())
 }
 
 pub fn get(
@@ -83,12 +85,13 @@ pub fn get(
     username: &String,
     no_print: bool,
     copy: bool,
-) -> Result<()> {
-    Ok(())
+)
+{
+
 }
 
-pub fn list(path: &Option<String>, recursive: bool) -> Result<()> {
-    Ok(())
+pub fn list(path: &Option<String>, recursive: bool) {
+
 }
 
 

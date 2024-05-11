@@ -1,4 +1,4 @@
-use anyhow::{Result, Error};
+use anyhow::Result;
 use std::path::PathBuf;
 use dirs;
 
