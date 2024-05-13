@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.5.4", features = ["derive"] }
-exitcode = "1.1.2"
 anyhow = "1.0.83"
 cli-clipboard = "0.4.0"
 rand = "0.8.5"

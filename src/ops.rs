@@ -1,5 +1,4 @@
 use std::fs;
-use std::os::unix::process::CommandExt;
 use std::path::{PathBuf, Path};
 use std::process::Command;
 use std::str;
@@ -206,7 +205,11 @@ pub fn list(subfolder: &Option<PathBuf>) {
 
     Command::new("tree")
         .current_dir(&arg)
-        .exec();
+        .spawn()
+        .unwrap_or_else(|err| {
+            eprintln!("Couldn't run \"tree\": {}", err);
+            exit(1);
+        });
 }
 
 pub fn clear(subfolder: &Option<PathBuf>) {
