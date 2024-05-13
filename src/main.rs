@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand};
-use jbrspass::arguments::*;
-use jbrspass::init_config;
-use jbrspass::ops::*;
+use rustpass::arguments::*;
+use rustpass::init_config;
+use rustpass::ops::*;
 use anyhow::Result;
 
 #[derive(Parser)]

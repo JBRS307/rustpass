@@ -320,18 +320,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8478577c03552c21db0e2724ffb8986a5ce7af88107e6be5d2ee6e158c12800"
 
 [[package]]
-name = "jbrspass"
-version = "0.2.0"
-dependencies = [
- "anyhow",
- "clap",
- "cli-clipboard",
- "dirs",
- "openssl",
- "rand",
-]
-
-[[package]]
 name = "libc"
 version = "0.2.154"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -592,6 +580,18 @@ dependencies = [
  "libc",
  "linux-raw-sys",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "rustpass"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "cli-clipboard",
+ "dirs",
+ "openssl",
+ "rand",
 ]
 
 [[package]]
