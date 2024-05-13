@@ -151,6 +151,11 @@ pub struct ConfigArgs {
 
 #[derive(Args)]
 pub struct GitArgs {
-    /// git args
-    pub args: Option<String>,
+    /// git arguments
+    #[clap(allow_hyphen_values(true))]
+    pub args: Option<Vec<String>>,
+
+    /// Removes git repository
+    #[arg(long)]
+    pub clear: bool,
 }

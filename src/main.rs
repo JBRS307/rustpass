@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 use jbrspass::arguments::*;
 use jbrspass::init_config;
 use jbrspass::ops::*;
+use anyhow::Result;
 
 #[derive(Parser)]
 struct Cli {
@@ -42,23 +43,25 @@ enum Commands {
     Git(GitArgs),
 }
 
-fn main() {
+fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    init_config();
+    init_config()?;
 
     match cli.command {
-        Commands::Init(args) => init(&args.subfolder),
+        Commands::Init(args) => init(&args.subfolder)?,
         Commands::Add(args) => add(&args.subfolder, &args.name, &args.password, &args.repeat_password,
-                                                        args.copy),
-        Commands::Update(args) => update(&args.subfolder, &args.name, &args.new_password, &args.repeat_password, args.copy),
-        Commands::Remove(args) => remove(&args.subfolder, &args.name, args.copy),
+                                                        args.copy)?,
+        Commands::Update(args) => update(&args.subfolder, &args.name, &args.new_password, &args.repeat_password, args.copy)?,
+        Commands::Remove(args) => remove(&args.subfolder, &args.name, args.copy)?,
         Commands::Generate(args) => generate(args.no_symbols, args.copy, args.no_print, args.saving.save, args.saving.new_save,
-                                                           args.length, &args.subfolder, &args.name),
-        Commands::Get(args) => get(&args.subfolder, &args.name, args.no_print, args.copy),
-        Commands::List(args) => list(&args.subfolder),
-        Commands::Clear(args) => clear(&args.subfolder),
-        Commands::Config(args) => config(&args.path, args.get, args.reset),
-        Commands::Git(args) => git(&args.args),
+                                                           args.length, &args.subfolder, &args.name)?,
+        Commands::Get(args) => get(&args.subfolder, &args.name, args.no_print, args.copy)?,
+        Commands::List(args) => list(&args.subfolder)?,
+        Commands::Clear(args) => clear(&args.subfolder)?,
+        Commands::Config(args) => config(&args.path, args.get, args.reset)?,
+        Commands::Git(args) => git(&args.args, args.clear)?,
     };
+
+    Ok(())
 }

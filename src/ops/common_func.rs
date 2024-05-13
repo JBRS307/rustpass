@@ -1,7 +1,6 @@
 use std::fs;
-use std::process::exit;
 use std::path::{PathBuf, Path};
-use anyhow::Result;
+use anyhow::{Error, Result};
 use cli_clipboard::{ClipboardContext, ClipboardProvider};
 
 use crate::files::get_key_dir;
@@ -25,18 +24,17 @@ pub fn copy_to_clipboard(text: &str) {
     }
 }
 
-pub fn get_key(subfolder: &Option<PathBuf>) -> Vec<u8> {
-    let mut key_dir = get_key_dir();
+pub fn get_key(subfolder: &Option<PathBuf>) -> Result<Vec<u8>> {
+    let mut key_dir = get_key_dir()?;
 
     if let Some(p) = subfolder {
         key_dir.push(p);
     }
 
-    if !Path::try_exists(&key_dir).expect("Failed to check if file exists") {
-        eprintln!("Key doesn't exist!");
-        exit(1);
+    if !Path::try_exists(&key_dir)? {
+        return Err(Error::msg("Key doesn't exist!"));
     }
 
     key_dir.push(KEY_FILE);
-    fs::read(key_dir).expect("Failed to read key file")
+    Ok(fs::read(key_dir)?)
 }
