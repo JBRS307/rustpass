@@ -37,6 +37,9 @@ enum Commands {
 
     /// Change location of .pass_key directory containing encryption keys, default is home directory
     Config(ConfigArgs),
+
+    /// Execute git command with given arguments, enables synchronization wit github
+    Git(GitArgs),
 }
 
 fn main() {
@@ -56,5 +59,6 @@ fn main() {
         Commands::List(args) => list(&args.subfolder),
         Commands::Clear(args) => clear(&args.subfolder),
         Commands::Config(args) => config(&args.path, args.get, args.reset),
+        Commands::Git(args) => git(&args.args),
     };
 }

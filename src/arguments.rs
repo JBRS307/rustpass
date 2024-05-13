@@ -148,3 +148,9 @@ pub struct ConfigArgs {
     #[arg(short, long)]
     pub reset: bool,
 }
+
+#[derive(Args)]
+pub struct GitArgs {
+    /// git args
+    pub args: Option<String>,
+}

@@ -2,13 +2,14 @@ use std::fs;
 use std::path::{PathBuf, Path};
 use std::process::Command;
 use std::str;
-use std::process::exit;
+use anyhow::{Result, Error};
 
 use self::common_func::*;
 use self::generate_func::*;
 use self::config_func::*;
 use self::add_func::*;
 use self::update_func::*;
+use self::git_func::*;
 
 use crate::encryption::*;
 use crate::files::*;
@@ -19,6 +20,7 @@ mod generate_func;
 mod config_func;
 mod add_func;
 mod update_func;
+mod git_func;
 
 const KEY_FILE: &str = "key";
 
@@ -33,10 +35,13 @@ pub fn init(subfolder: &Option<PathBuf>) {
         storage_directory.push(p);
     }
 
-    if Path::try_exists(&storage_directory).expect("Directory existance check error") {
+    key_directory.push(KEY_FILE); // for the sake of existance check
+    if Path::try_exists(&key_directory).expect("Directory existance check error") {
         eprintln!("Directory already initialized!");
         exit(1);
     }
+    key_directory.pop();
+
 
     create_dir_tree(&storage_directory);
     create_dir_tree(&key_directory);
@@ -222,8 +227,7 @@ pub fn clear(subfolder: &Option<PathBuf>) {
     }
 
     if !Path::try_exists(&storage_dir).expect("Failed to check if file exists") {
-        eprintln!("No such file or directory!");
-        exit(1);
+        Err(Error::msg("No such file or directory!"))
     }
 
     clear_dir(&storage_dir);
@@ -253,6 +257,34 @@ pub fn config(path: &Option<PathBuf>, get: bool, reset: bool) {
 
         change_config(&old_key_dir, &new_key_dir);
     }
+}
+
+pub fn git(args: &Option<String>) {
+    let args_vec = match args {
+        Some(s) => parse_args(s),
+        None => Vec::new(),
+    };
+
+    let storage_dir = get_storage_dir();
+    if !Path::try_exists(&storage_dir).expect("Failed to check if directory exists") {
+        eprintln!("Storage uninitialized!");
+        exit(1);
+    }
+
+    let status = Command::new("git")
+        .current_dir(&storage_dir)
+        .args(&args_vec)
+        .status()
+        .unwrap_or_else(|err| {
+            eprintln!("Coudln't execute \"git\" command: {}", err);
+            exit(1);
+        });
+
+        if status.success() {
+            println!("Execution successful!");
+        } else {
+            eprintln!("Failed to execute \"git\": {}", status);
+        }
 }
 
 
