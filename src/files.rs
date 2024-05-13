@@ -1,33 +1,29 @@
 use std::fs;
-use std::path::PathBuf;
-// use anyhow::Result;
+use std::path::{PathBuf, Path};
+use anyhow::{Error, Result};
+
+use crate::CONFIG_FILE;
 
 const STORAGE_FOLDER: &'static str = ".pass_storage";
 
-fn get_storage_dir() -> PathBuf {
-    let mut dir = dirs::home_dir().expect("Unable to get the home directory!");
+pub fn get_home_dir() -> PathBuf {
+    dirs::home_dir().expect("Unable to get home directory")
+}
+
+pub fn get_storage_dir() -> PathBuf {
+    let mut dir = get_home_dir();
     dir.push(STORAGE_FOLDER);
     dir
 }
 
-pub fn create_dir_tree(subfolder: &Option<PathBuf>, key_id: &String) {
-    let mut path = get_storage_dir();
+pub fn get_key_dir() -> PathBuf {
+    PathBuf::from(fs::read_to_string(CONFIG_FILE).expect("File reading error"))
+}
 
-    if let Some(x) = subfolder {
-        path.push(x);
-    }
-
-    path.push(key_id);
-
+pub fn create_dir_tree(path: &PathBuf) {
     fs::create_dir_all(path).expect("Directory creation error");
 }
 
-pub fn clear_dir(subfolder: &Option<PathBuf>) {
-    let mut path = get_storage_dir();
-
-    if let Some(x) = subfolder {
-        path.push(x);
-    }
-
+pub fn clear_dir(path: &PathBuf) {
     fs::remove_dir_all(path).expect("Directory removal error");
 }

@@ -1,5 +1,6 @@
 use clap::{Parser, Subcommand};
 use jbrspass::arguments::*;
+use jbrspass::init_config;
 use jbrspass::ops::*;
 
 #[derive(Parser)]
@@ -33,22 +34,28 @@ enum Commands {
 
     /// Completely clears the password storage, use carefully
     Clear(ClearArgs),
+
+    /// Change location of .pass_key directory containing encryption keys, default is home directory
+    Config(ConfigArgs),
 }
 
 fn main() {
     let cli = Cli::parse();
 
+    init_config();
+
     match cli.command {
-        Commands::Init(args) => init(&args.path, &args.key),
-        Commands::Add(args) => add(&args.path, &args.password, &args.repeat_password,
+        Commands::Init(args) => init(&args.subfolder),
+        Commands::Add(args) => add(&args.subfolder, &args.name, &args.password, &args.repeat_password,
                                                         args.copy),
-        Commands::Update(args) => update(&args.path, &args.new_password, &args.repeat_password,
+        Commands::Update(args) => update(&args.subfolder, &args.name, &args.new_password, &args.repeat_password,
                                                      args.copy_old, args.copy_new),
-        Commands::Remove(args) => remove(&args.path, args.copy),
+        Commands::Remove(args) => remove(&args.subfolder, &args.name, args.copy),
         Commands::Generate(args) => generate(args.no_symbols, args.copy, args.no_print, args.saving.save, args.saving.new_save,
-                                                           args.length, &args.path),
-        Commands::Get(args) => get(&args.path, args.no_print, args.copy),
-        Commands::List(args) => list(&args.path),
-        Commands::Clear(args) => clear(&args.path),
+                                                           args.length, &args.subfolder, &args.name),
+        Commands::Get(args) => get(&args.subfolder, &args.name, args.no_print, args.copy),
+        Commands::List(args) => list(&args.subfolder),
+        Commands::Clear(args) => clear(&args.subfolder),
+        Commands::Config(args) => config(&args.path, args.get, args.reset),
     };
 }

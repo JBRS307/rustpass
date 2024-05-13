@@ -1,20 +1,22 @@
 use clap::Args;
+use core::arch;
 use std::path::PathBuf;
 
 #[derive(Args)]
 pub struct InitArgs {
     /// Subfolder to be initialized
     #[arg(short, long)]
-    pub path: Option<PathBuf>,
-
-    /// Your PGP encryption key
-    pub key: String,
+    pub subfolder: Option<PathBuf>,
 }
 
 #[derive(Args)]
 pub struct AddArgs {
-    /// Path to password, i.e. subfolder/page/username
-    pub path: PathBuf,
+    /// Path to subfolder, i.e. subfolder/page/username
+    #[arg(short, long)]
+    pub subfolder: Option<PathBuf>,
+
+    /// Name by which password should be indentified
+    pub name: String,
 
     /// Password you want to add
     pub password: String,
@@ -29,8 +31,12 @@ pub struct AddArgs {
 
 #[derive(Args)]
 pub struct UpdateArgs {
-    /// Path to password, i.e. subfolder/page/username
-    pub path: PathBuf,
+    /// Path to subfolder, i.e. subfolder/page/username
+    #[arg(short, long)]
+    pub subfolder: Option<PathBuf>,
+
+    /// Name by which password is identifies
+    pub name: String,
 
     /// Your new password
     pub new_password: String,
@@ -49,8 +55,12 @@ pub struct UpdateArgs {
 
 #[derive(Args)]
 pub struct RemoveArgs {
-    /// Path to password, i.e. subfolder/page/username
-    pub path: PathBuf,
+    /// Path to subfolder, i.e. subfolder/page/username
+    #[arg(short, long)]
+    pub subfolder: Option<PathBuf>,
+
+    /// Name by which password is identifies
+    pub name: String,
 
     /// Copies removed password to clipboard
     #[arg(short, long)]
@@ -77,9 +87,13 @@ pub struct GenerateArgs {
     /// Desired length of a password
     pub length: u32,
 
-    /// Path to password, i.e. subfolder/page/username
+    /// Path to subfolder, i.e. subfolder/page/username
     #[clap(required_if_eq_any([("save", "true"), ("new_save", "true")]))]
-    pub path: Option<PathBuf>,
+    pub subfolder: Option<PathBuf>,
+
+    /// Name by which password should be identified
+    #[clap(required_if_eq_any([("save", "true"), ("new_save", "true")]))]
+    pub name: Option<String>,
 }
 
 #[derive(Args)]
@@ -97,7 +111,11 @@ pub struct GenSaves {
 #[derive(Args)]
 pub struct GetArgs {
     /// Path to password, i.e. subfolder/page/username
-    pub path: PathBuf,
+    #[arg(short, long)]
+    pub subfolder: Option<PathBuf>,
+
+    /// Name by which password should be identified
+    pub name: String,
 
     /// Doesn't print the password
     #[arg(short, long, requires = "copy")]
@@ -111,12 +129,27 @@ pub struct GetArgs {
 #[derive(Args)]
 pub struct ListArgs {
     /// Subfolder which you want to be listed, if not specified, main folder is listed
-    pub path: Option<PathBuf>,
+    pub subfolder: Option<PathBuf>,
 }
 
 #[derive(Args)]
 pub struct ClearArgs {
     /// Path to the subfolder that should be deleted, if not given, removes the entire storage directory
     #[arg(short, long)]
-    pub path: Option<PathBuf>
+    pub subfolder: Option<PathBuf>
+}
+
+#[derive(Args)]
+pub struct ConfigArgs {
+    /// Path to new key location
+    #[clap(required_unless_present_any(["get", "reset"]))]
+    pub path: Option<PathBuf>,
+
+    /// Print current password key location
+    #[arg(short, long)]
+    pub get: bool,
+
+    /// Resets config to default
+    #[arg(short, long)]
+    pub reset: bool,
 }
