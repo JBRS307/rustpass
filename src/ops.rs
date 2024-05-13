@@ -1,18 +1,25 @@
 use std::fs;
+use std::os::unix::process::CommandExt;
 use std::path::{PathBuf, Path};
 use std::process::Command;
 use std::str;
+use std::process::exit;
 
 use self::common_func::*;
 use self::generate_func::*;
 use self::config_func::*;
-use crate::{encryption::*, KEY_DIRECTORY};
+use self::add_func::*;
+use self::update_func::*;
+
+use crate::encryption::*;
 use crate::files::*;
-use crate::CONFIG_FILE;
+use crate::{CONFIG_FILE, KEY_DIRECTORY};
 
 mod common_func;
 mod generate_func;
 mod config_func;
+mod add_func;
+mod update_func;
 
 const KEY_FILE: &str = "key";
 
@@ -28,7 +35,8 @@ pub fn init(subfolder: &Option<PathBuf>) {
     }
 
     if Path::try_exists(&storage_directory).expect("Directory existance check error") {
-        panic!("Directory already initialized!");
+        eprintln!("Directory already initialized!");
+        exit(1);
     }
 
     create_dir_tree(&storage_directory);
@@ -47,16 +55,19 @@ pub fn add(
 )
 {
     if password.ne(repeat_password) {
-        panic!("Passwords differ!");
+        eprintln!("Passwords differ!");
+        exit(1);
     }
 
-    let key = get_key();
-
+    let key = get_key(subfolder);
     let encrypted = encrypt(&key, password);
+
+    add_new_password(&encrypted, name, subfolder);
 
     if copy {
         copy_to_clipboard(password);
     }
+    println!("Password added successfully!");
 }
 
 pub fn update(
@@ -64,13 +75,24 @@ pub fn update(
     name: &String,
     password: &String,
     repeat_password: &String,
-    copy_old: bool,
-    copy_new: bool,
+    copy: bool,
 )
 {
     if password.ne(repeat_password) {
-        panic!("Password differ!");
+        eprintln!("Passwords differ!");
+        exit(1);
     }
+
+    let key = get_key(subfolder);
+    let encrypted = encrypt(&key, password);
+
+    update_password(&encrypted, name, subfolder);
+
+    if copy {
+        copy_to_clipboard(password);
+    }
+
+    println!("Password updated successfully!");
 }
 
 pub fn remove(
@@ -79,7 +101,24 @@ pub fn remove(
     copy: bool,
 )
 {
+    let mut path = get_storage_dir();
+    if let Some(p) = subfolder {
+        path.push(p);
+    }
+    path.push(name);
 
+    if !Path::try_exists(&path).expect("Failed to check if file exists") {
+        eprintln!("No such file or directory!");
+        exit(1);
+    }
+
+    if copy {
+        get(subfolder, name, true, true);
+    }
+
+    fs::remove_file(&path).expect("Error removing file");
+
+    println!("Password removed successfully!");
 }
 
 pub fn generate(
@@ -106,6 +145,18 @@ pub fn generate(
     if copy {
         copy_to_clipboard(&password);
     }
+
+    if save || new_save {
+        let key = get_key(subfolder);
+        let encrypted = encrypt(&key, &password);
+        
+        if new_save {
+            add_new_password(&encrypted, &name.clone().unwrap(), subfolder);
+        } else if save {
+            update_password(&encrypted, &name.clone().unwrap(), subfolder);
+        }
+    }
+
 }
 
 pub fn get(
@@ -115,7 +166,30 @@ pub fn get(
     copy: bool,
 )
 {
+    let mut path = get_storage_dir();
 
+    if let Some(p) = subfolder {
+        path.push(p);
+    }
+    path.push(name);
+
+    if !Path::try_exists(&path).expect("Failed to check if file exists") {
+        eprintln!("No such file or directory!");
+        exit(1);
+    }
+
+    let encrypted = fs::read(&path).expect("Error reading from file");
+    let key = get_key(subfolder);
+
+    let password = decrypt(&key, &encrypted);
+
+    if copy {
+        copy_to_clipboard(&password);
+    }
+
+    if !no_print {
+        println!("{}", password);
+    }
 }
 
 pub fn list(subfolder: &Option<PathBuf>) {
@@ -125,15 +199,14 @@ pub fn list(subfolder: &Option<PathBuf>) {
         arg.push(p);
     }
 
-    let output =  match Command::new("ls")
-        .arg(arg)
-        .output()
-        {
-            Ok(o) => o,
-            Err(err) => panic!("{}", err),
-        };
-    
-    println!("{}", str::from_utf8(&output.stdout).expect("String conversion error"));
+    if !Path::try_exists(&arg).expect("Failed to check if file exists") {
+        eprintln!("No such file or directory!");
+        exit(1);
+    }
+
+    Command::new("tree")
+        .current_dir(&arg)
+        .exec();
 }
 
 pub fn clear(subfolder: &Option<PathBuf>) {
@@ -143,6 +216,11 @@ pub fn clear(subfolder: &Option<PathBuf>) {
     if let Some(p) = subfolder {
         storage_dir.push(p);
         key_dir.push(p);
+    }
+
+    if !Path::try_exists(&storage_dir).expect("Failed to check if file exists") {
+        eprintln!("No such file or directory!");
+        exit(1);
     }
 
     clear_dir(&storage_dir);

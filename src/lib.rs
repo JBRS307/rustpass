@@ -1,13 +1,14 @@
 use std::path::{Path, PathBuf};
-use files::get_home_dir;
 use std::fs;
+
+use self::files::get_home_dir;
 
 pub mod arguments;
 pub mod ops;
 pub mod encryption;
 pub mod files;
 
-pub const CONFIG_FILE: &'static str = ".pass_config";
+const CONFIG_FILE: &'static str = ".pass_config";
 const KEY_DIRECTORY: &'static str = ".pass_key";
 
 pub fn init_config() {

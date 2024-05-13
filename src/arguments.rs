@@ -1,5 +1,4 @@
 use clap::Args;
-use core::arch;
 use std::path::PathBuf;
 
 #[derive(Args)]
@@ -44,13 +43,9 @@ pub struct UpdateArgs {
     /// Repetition of your new password to avoid typos
     pub repeat_password: String,
 
-    /// Copies old password to clipboard
-    #[arg(long)]
-    pub copy_old: bool,
-
     /// Copies new password to clipboard
     #[arg(short, long)]
-    pub copy_new: bool,
+    pub copy: bool,
 }
 
 #[derive(Args)]
@@ -86,14 +81,14 @@ pub struct GenerateArgs {
 
     /// Desired length of a password
     pub length: u32,
-
-    /// Path to subfolder, i.e. subfolder/page/username
-    #[clap(required_if_eq_any([("save", "true"), ("new_save", "true")]))]
-    pub subfolder: Option<PathBuf>,
-
+    
     /// Name by which password should be identified
     #[clap(required_if_eq_any([("save", "true"), ("new_save", "true")]))]
     pub name: Option<String>,
+    
+    /// Path to subfolder, i.e. subfolder/page/username
+    pub subfolder: Option<PathBuf>,
+
 }
 
 #[derive(Args)]

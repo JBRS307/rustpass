@@ -1,6 +1,5 @@
 use std::fs;
-use std::path::{PathBuf, Path};
-use anyhow::{Error, Result};
+use std::path::PathBuf;
 
 use crate::CONFIG_FILE;
 
