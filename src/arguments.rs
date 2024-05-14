@@ -163,3 +163,20 @@ pub struct GitArgs {
     #[arg(long)]
     pub keys: bool,
 }
+
+#[derive(Args)]
+pub struct ExportArgs {
+    /// Exports keys directory
+    #[arg(long)]
+    pub keys: bool,
+
+    /// Location, where file should be saved (default is home directory)
+    #[arg(short, long)]
+    pub path: Option<PathBuf>,
+}
+
+#[derive(Args)]
+pub struct ImportArgs {
+    /// Path to tar file
+    pub path: PathBuf, 
+}

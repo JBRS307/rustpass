@@ -5,7 +5,7 @@ use dirs;
 
 use crate::CONFIG_FILE;
 
-const STORAGE_FOLDER: &'static str = ".pass_storage";
+pub const STORAGE_FOLDER: &'static str = ".pass_storage";
 
 pub fn get_home_dir() -> Result<PathBuf> {
     let home_dir = dirs::home_dir();

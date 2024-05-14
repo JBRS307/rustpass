@@ -41,6 +41,12 @@ enum Commands {
 
     /// Execute git command with given arguments, enables synchronization wit github
     Git(GitArgs),
+
+    /// Export directory to tar file
+    Export(ExportArgs),
+
+    /// Import directory from tar file
+    Import(ImportArgs),
 }
 
 fn main() -> Result<()> {
@@ -61,7 +67,9 @@ fn main() -> Result<()> {
         Commands::Clear(args) => clear(&args.subfolder)?,
         Commands::Config(args) => config(&args.path, args.get, args.reset)?,
         Commands::Git(args) => git(&args.args, args.clear, args.keys)?,
-    };
+        Commands::Export(args) => export(args.keys, &args.path)?,
+        Commands::Import(args) => import(&args.path)?,
+    }
 
     Ok(())
 }

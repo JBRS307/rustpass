@@ -21,6 +21,7 @@ mod config_func;
 mod add_func;
 mod update_func;
 mod git_func;
+mod import_export;
 
 const KEY_FILE: &str = "key";
 
@@ -290,6 +291,16 @@ pub fn git(args: &Option<Vec<String>>, clear: bool, keys: bool) -> Result<()> {
                 Err(Error::msg(format!("\"git\" error: {}", status)))
             }
     }
+}
+
+pub fn export(keys: bool, path: &Option<PathBuf>) -> Result<()> {
+
+    Ok(())
+}
+
+pub fn import(path: &PathBuf) -> Result<()> {
+
+    Ok(())
 }
 
 
