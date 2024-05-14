@@ -7,13 +7,13 @@ use self::common_func::*;
 use self::generate_func::*;
 use self::config_func::*;
 use self::add_func::*;
-use self::import_export::{pack_keys, pack_stoarge};
+use self::import_export::*;
 use self::update_func::*;
 use self::git_func::*;
 
-use crate::encryption::*;
+use crate::{encryption::*, STORAGE_FOLDER};
 use crate::files::*;
-use crate::{CONFIG_FILE, KEY_DIRECTORY, KEY_FILE};
+use crate::{CONFIG_FILE, KEY_DIRECTORY, KEY_FILE, TEMP_DIR};
 
 mod common_func;
 mod generate_func;
@@ -310,8 +310,36 @@ pub fn export(keys: bool, path: &Option<PathBuf>) -> Result<()> {
 }
 
 pub fn import(path: &PathBuf) -> Result<()> {
+    if !Path::try_exists(path)? {
+        return Err(Error::msg("Incorrect path!"));
+    }
 
-    Ok(())
+    let file_name = match path.file_name() {
+        Some(f) => f,
+        None => return Err(Error::msg("No filename was specified!")),
+    };
+
+    if !file_name.to_str().expect("String conversion error").ends_with(".tar.gz") {
+        return Err(Error::msg("Specified file is in incorrect format (.tar.gz required)!"));
+    }
+
+    unpack(path)?;
+
+    let mut output_path = get_home_dir()?;
+    output_path.push(TEMP_DIR);
+
+    output_path.push(KEY_DIRECTORY);
+    if Path::try_exists(&output_path)? {
+        return import_keys(output_path);
+    }
+
+    output_path.pop();
+    output_path.push(STORAGE_FOLDER);
+    if Path::try_exists(&output_path)? {
+        return import_storage(output_path);
+    }
+
+    Err(Error::msg("Archive includes neither .pass_storage nor .pass_key!"))
 }
 
 

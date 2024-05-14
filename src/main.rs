@@ -12,40 +12,40 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Initializes a new subfolder
+    /// Initializes a new subfolder.
     Init(InitArgs),
 
-    /// Adds password to list, if password for that user on that page doesn't already exist
+    /// Adds password to list, if password for that user on that page doesn't already exist.
     Add(AddArgs),
 
-    /// Updates or adds new password
+    /// Updates or adds new password.
     Update(UpdateArgs),
 
-    /// Removes password for given username for given page
+    /// Removes password.
     Remove(RemoveArgs),
 
-    /// Generates a random password for given username on a given page
+    /// Generates a random password.
     Generate(GenerateArgs),
 
-    /// Gets password for given username for given page
+    /// Gets password.
     Get(GetArgs),
 
-    /// Lists pages for which passwords are saved
+    /// Lists pages for which passwords are saved. Requires tree installed.
     List(ListArgs),
 
-    /// Completely clears the password storage, use carefully
+    /// Completely clears the password storage, use carefully.
     Clear(ClearArgs),
 
-    /// Change location of .pass_key directory containing encryption keys, default is home directory
+    /// Change location of .pass_key directory containing encryption keys, default is home directory.
     Config(ConfigArgs),
 
-    /// Execute git command with given arguments, enables synchronization wit github
+    /// Execute git command with given arguments, enables synchronization wit github. Requires git installed.
     Git(GitArgs),
 
-    /// Export directory to tar file
+    /// Export directory to tar file. Requires tar installed.
     Export(ExportArgs),
 
-    /// Import directory from tar file
+    /// Import directory from tar file, overwrites current passwords or keys. Requires tar installed.
     Import(ImportArgs),
 }
 
