@@ -3,9 +3,7 @@ use std::path::PathBuf;
 use anyhow::{Error, Result};
 use dirs;
 
-use crate::CONFIG_FILE;
-
-pub const STORAGE_FOLDER: &'static str = ".pass_storage";
+use crate::{CONFIG_FILE, STORAGE_FOLDER};
 
 pub fn get_home_dir() -> Result<PathBuf> {
     let home_dir = dirs::home_dir();

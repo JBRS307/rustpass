@@ -11,6 +11,8 @@ pub mod files;
 
 const CONFIG_FILE: &'static str = ".pass_config";
 const KEY_DIRECTORY: &'static str = ".pass_key";
+const STORAGE_FOLDER: &'static str = ".pass_storage";
+const KEY_FILE: &str = "key";
 
 pub fn init_config() -> Result<()> {
     let config_path = PathBuf::from(CONFIG_FILE);

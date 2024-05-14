@@ -1,19 +1,19 @@
 use std::fs;
 use std::path::{PathBuf, Path};
 use std::process::Command;
-use std::str;
 use anyhow::{Result, Error};
 
 use self::common_func::*;
 use self::generate_func::*;
 use self::config_func::*;
 use self::add_func::*;
+use self::import_export::{pack_keys, pack_stoarge};
 use self::update_func::*;
 use self::git_func::*;
 
 use crate::encryption::*;
 use crate::files::*;
-use crate::{CONFIG_FILE, KEY_DIRECTORY};
+use crate::{CONFIG_FILE, KEY_DIRECTORY, KEY_FILE};
 
 mod common_func;
 mod generate_func;
@@ -22,8 +22,6 @@ mod add_func;
 mod update_func;
 mod git_func;
 mod import_export;
-
-const KEY_FILE: &str = "key";
 
 pub fn init(subfolder: &Option<PathBuf>) -> Result<()> {
     let key = generate_key();
@@ -204,10 +202,15 @@ pub fn list(subfolder: &Option<PathBuf>) -> Result<()> {
         return Err(Error::msg("No such file or directory!"));
     }
 
-    Command::new("tree")
+    let status = Command::new("tree")
         .current_dir(&arg)
-        .spawn()?;
-    Ok(())
+        .status()?;
+
+    if status.success() {
+        Ok(())
+    } else {
+        Err(Error::msg(format!("Tree error: {}", status)))
+    }
 }
 
 pub fn clear(subfolder: &Option<PathBuf>) -> Result<()> {
@@ -294,8 +297,16 @@ pub fn git(args: &Option<Vec<String>>, clear: bool, keys: bool) -> Result<()> {
 }
 
 pub fn export(keys: bool, path: &Option<PathBuf>) -> Result<()> {
+    let output_path = match path {
+        Some(p) => p.to_owned(),
+        None => get_home_dir()?,
+    };
 
-    Ok(())
+    if keys {
+        pack_keys(output_path)
+    } else {
+        pack_stoarge(output_path)
+    }
 }
 
 pub fn import(path: &PathBuf) -> Result<()> {
