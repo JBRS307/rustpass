@@ -223,7 +223,11 @@ pub fn clear(subfolder: &Option<PathBuf>) -> Result<()> {
     }
 
     if !Path::try_exists(&storage_dir)? {
-        return Err(Error::msg("No such file or directory!"));
+        return Err(Error::msg("No such file or directory in storage!"));
+    }
+
+    if !Path::try_exists(&key_dir)? {
+        return Err(Error::msg("No such file or directory in keys!"));
     }
 
     clear_dir(&storage_dir)?;
