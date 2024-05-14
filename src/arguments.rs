@@ -158,4 +158,8 @@ pub struct GitArgs {
     /// Removes git repository
     #[arg(long)]
     pub clear: bool,
+
+    /// Synchronizes the key directory
+    #[arg(long)]
+    pub keys: bool,
 }

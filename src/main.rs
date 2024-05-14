@@ -60,7 +60,7 @@ fn main() -> Result<()> {
         Commands::List(args) => list(&args.subfolder)?,
         Commands::Clear(args) => clear(&args.subfolder)?,
         Commands::Config(args) => config(&args.path, args.get, args.reset)?,
-        Commands::Git(args) => git(&args.args, args.clear)?,
+        Commands::Git(args) => git(&args.args, args.clear, args.keys)?,
     };
 
     Ok(())

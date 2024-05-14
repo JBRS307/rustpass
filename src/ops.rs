@@ -257,14 +257,19 @@ pub fn config(path: &Option<PathBuf>, get: bool, reset: bool) -> Result<()> {
     }
 }
 
-pub fn git(args: &Option<Vec<String>>, clear: bool) -> Result<()> {
-    let storage_dir = get_storage_dir()?;
-    if !Path::try_exists(&storage_dir)? {
+pub fn git(args: &Option<Vec<String>>, clear: bool, keys: bool) -> Result<()> {
+    let repo_dir = if keys {
+        get_key_dir()?
+    } else {
+        get_storage_dir()?
+    };
+
+    if !Path::try_exists(&repo_dir)? {
         return Err(Error::msg("Storage uninitialized!"))
     }
 
     if clear {
-        remove_repo(storage_dir)?;
+        remove_repo(repo_dir)?;
         println!("Successfully removed repository!");
         Ok(())
     } else {
@@ -274,7 +279,7 @@ pub fn git(args: &Option<Vec<String>>, clear: bool) -> Result<()> {
         };
     
         let status = Command::new("git")
-            .current_dir(&storage_dir)
+            .current_dir(&repo_dir)
             .args(&arg_vec)
             .status()?;
     
