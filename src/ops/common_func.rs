@@ -32,7 +32,7 @@ pub fn get_key(subfolder: &Option<PathBuf>) -> Result<Vec<u8>> {
     }
 
     if !Path::try_exists(&key_dir)? {
-        return Err(Error::msg("Key doesn't exist!"));
+        return Err(Error::msg("Key error: Key doesn't exist!"));
     }
 
     key_dir.push(KEY_FILE);

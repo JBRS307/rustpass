@@ -108,7 +108,7 @@ pub fn remove(
     path.push(name);
 
     if !Path::try_exists(&path)? {
-        return Err(Error::msg("No such file or directory!"));
+        return Err(Error::msg("Storage error: No such file or directory!"));
     }
 
     if copy {
@@ -166,6 +166,7 @@ pub fn get(
     copy: bool,
 ) -> Result<()> {
     let mut path = get_storage_dir()?;
+    let key = get_key(subfolder)?;
 
     if let Some(p) = subfolder {
         path.push(p);
@@ -173,11 +174,10 @@ pub fn get(
     path.push(name);
 
     if !Path::try_exists(&path)? {
-        return Err(Error::msg("No such file or directory!"))
+        return Err(Error::msg("Storage error: No such file or directory!"))
     }
 
     let encrypted = fs::read(&path)?;
-    let key = get_key(subfolder)?;
 
     let password = decrypt(&key, &encrypted);
 
@@ -199,7 +199,7 @@ pub fn list(subfolder: &Option<PathBuf>) -> Result<()> {
     }
 
     if !Path::try_exists(&arg)? {
-        return Err(Error::msg("No such file or directory!"));
+        return Err(Error::msg("Storage error: No such file or directory!"));
     }
 
     let status = Command::new("tree")
@@ -223,11 +223,11 @@ pub fn clear(subfolder: &Option<PathBuf>) -> Result<()> {
     }
 
     if !Path::try_exists(&storage_dir)? {
-        return Err(Error::msg("No such file or directory in storage!"));
+        return Err(Error::msg("Storage error: No such file or directory!"));
     }
 
     if !Path::try_exists(&key_dir)? {
-        return Err(Error::msg("No such file or directory in keys!"));
+        return Err(Error::msg("Key error: No such file or directory!"));
     }
 
     clear_dir(&storage_dir)?;

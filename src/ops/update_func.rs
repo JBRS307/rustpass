@@ -11,8 +11,8 @@ pub fn update_password(pass: &[u8], name: &String, subfolder: &Option<PathBuf>) 
         pass_dir.push(p);
     }
 
-    if !Path::try_exists(&pass_dir).expect("Failed to check if file exists") {
-        return Err(Error::msg("No such file or directory!"));
+    if !Path::try_exists(&pass_dir)? {
+        return Err(Error::msg("Storage error: No such file or directory!"));
     }
 
     pass_dir.push(name);

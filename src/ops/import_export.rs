@@ -41,7 +41,7 @@ pub fn pack_keys(mut output: PathBuf) -> Result<()> {
     let mut dir = get_key_dir()?;
 
     if !Path::try_exists(&dir)? {
-        return Err(Error::msg("Key directory doesn't exist!"));
+        return Err(Error::msg("Key error: Directory doesn't exist!"));
     }
 
     dir.pop();
@@ -54,7 +54,7 @@ pub fn pack_stoarge(mut output: PathBuf) -> Result<()> {
     let mut dir = get_storage_dir()?;
 
     if !Path::try_exists(&dir)? {
-        return Err(Error::msg("Storage directory doesn't exist!"));
+        return Err(Error::msg("Storage error: Directory doesn't exist!"));
     }
 
     dir.pop();

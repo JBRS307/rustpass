@@ -12,13 +12,13 @@ pub fn add_new_password(pass: &[u8], name: &String, subfolder: &Option<PathBuf>)
     }
 
     if !Path::try_exists(&pass_dir)? {
-        return Err(Error::msg("No such file or directory!"));
+        return Err(Error::msg("Storage error: No such file or directory!"));
     }
 
     pass_dir.push(name);
 
     if Path::try_exists(&pass_dir)? {
-        return Err(Error::msg("Password already exists in this directory!"));
+        return Err(Error::msg("Storage error: Password already exists in this directory!"));
     }
 
     fs::write(&pass_dir, pass)?;
